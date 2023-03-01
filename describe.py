@@ -34,14 +34,36 @@ def main():
 		new_column_names.append("Feature " + str(i))
 		i += 1
 	df.columns = new_column_names
-	print(df)
+	
+	# count, mean, std, min, 25%, 50%, 75%, max
+	count = 0
+	min = 0
+	max = 0
+	first_percentile = 0
+	second_percentile = 0
+	third_percentile = 0
+	mean = 0
+	std = 0
+	for column in df:
+		min = float(df[column][0])
+		count = 0
+		for value in df[column]:
+			if value != "":
+				count += 1 # this counts too many!
+			if float(value) < min:
+				min = float(value)
+			if float(value) > max:
+				max = float(value)
+			# mean += col
+			# std =
+			# PERCENTILES HERE
+		print(f"count: {count}, min: {min}, max: {max}")
 
+			
 
-
-
-
-
-	#print(df.describe()) # DESIRED END RESULT PART 1
+	
+	# print(df)
+	print(df.describe()) # DESIRED END RESULT PART 1
 
 if __name__ == '__main__':
     main()
