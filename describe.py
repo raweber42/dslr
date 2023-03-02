@@ -4,7 +4,7 @@ import numpy as np
 import time
 from colors import colors
 import sys
-
+import math
 
 def main():
 	if len(sys.argv) != 2:
@@ -45,8 +45,11 @@ def main():
 	mean = 0
 	std = 0
 	for column in df:
-		min = float(df[column][0])
 		count = 0
+		mean = 0
+		min = float(df[column][0])
+		max = 0
+		std = 0
 		for value in df[column]:
 			if value != "":
 				count += 1 # this counts too many!
@@ -54,10 +57,22 @@ def main():
 				min = float(value)
 			if float(value) > max:
 				max = float(value)
-			# mean += col
-			# std =
-			# PERCENTILES HERE
-		print(f"count: {count}, min: {min}, max: {max}")
+			mean += float(value)
+			print(f"MEAN inner: {mean}, value: {value}")
+		mean /= count
+
+
+		# second round for std and the percentiles
+		for value in df[column]:
+			std += (float(value) - mean) ** 2
+		
+		std /= (count - 1)
+		std = math.sqrt(std)
+		print(f"count: {count}, min: {min}, max: {max}, mean: {mean}, std: {std}")
+		
+			
+
+
 
 			
 
