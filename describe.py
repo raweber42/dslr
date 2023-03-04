@@ -37,14 +37,23 @@ def main():
 	df.columns = new_column_names
 	
 	# count, mean, std, min, 25%, 50%, 75%, max
+	count_array = []
 	count = 0
+	min_array = []
 	min = 0
+	max_array = []
 	max = 0
+	first_perc_array = []
 	first_percentile = 0
+	second_perc_array = []
 	second_percentile = 0
+	third_perc_array = []
 	third_percentile = 0
+	mean_array = []
 	mean = 0.0
+	std_array = []
 	std = 0.0
+
 	for column in df:
 		count = 0.0
 		mean = 0.0
@@ -96,11 +105,10 @@ def main():
 				value = 0
 			
 			# WARNING: check again, what happens if percentile is EXACTLY the index
-			
+
 			# linear interpolation: i + (j - i) * fraction, where fraction is the fractional part of the index surrounded by i and j.
 			if percentile_count == round(count * 0.25):
 				first_percentile = value
-			print((count * 0.25), (count * 0.25).is_integer())
 			if not ((count - 1) * 0.25).is_integer():
 				if percentile_count == round(count * 0.25) + 1:
 					first_percentile = first_percentile + ((value - first_percentile) * (((count - 1) * 0.25) - math.floor((count - 1) * 0.25)))
@@ -117,29 +125,32 @@ def main():
 				if percentile_count == round(count * 0.75) + 1:
 					third_percentile = third_percentile + ((value - third_percentile) * (((count - 1) * 0.75) - math.floor((count - 1) * 0.75)))
 					break #nothing more to do
+		count_array.append(count)
+		mean_array.append(mean)
+		min_array.append(min)
+		max_array.append(max)
+		std_array.append(std)
+		first_perc_array.append(first_percentile)
+		second_perc_array.append(second_percentile)
+		third_perc_array.append(third_percentile)
 
-	print(f"first percentile: {first_percentile:.6f}, second percentile: {second_percentile:.6f}, third_percentile: {third_percentile:.6f}")
-	print(f"count: {count:.6f}, min: {min:.6f}, max: {max:.6f}, mean: {mean:.6f}, std: {std:.6f}")
-
-		# check std of first Feature again!
-		
-			
- 
-
-# Step 1: Arrange all data values in the data set in ascending order.
-# Step 2: Count the number of values in the data set where it is represented as 'n'.
-# Step 3: calculate the value of k/100, where k = any number between zero and one hundred.
-# Step 4: Multiply 'k' percent by 'n'.The resultant number is called an index.
-# Step 5: If the resultant index is not a whole number then round to the nearest whole number, then go to Step 7. If the index is a whole number, then go to Step 6. 
-# Step 6: Count the values in your data set from left to right until you reach the number. Then find the mean for that corresponding number and the next number. The resultant value is the kth percentile of your data set. 
-# Step 7: Count the values in your data set from left to right until you reach the number. The obtained value will be the kth percentile of your data set.
+	# print out results
+	print_table = []
+	print_table.append(count_array)
+	print_table.append(mean_array)
+	print_table.append(std_array)
+	print_table.append(min_array)
+	print_table.append(first_perc_array)
+	print_table.append(second_perc_array)
+	print_table.append(third_perc_array)
+	print_table.append(max_array)
 
 
-			
+	print_df = pd.DataFrame(print_table, columns = new_column_names, index=['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'])
+	print(f"{colors().BLUE}", print_df, f"{colors().END}")
 
-	
-	# print(df)
-	print(df.describe()) # DESIRED END RESULT PART 1
+	# DESIRED END RESULT PART 1
+	print("\nDESIRED RESULT: \n\n", df.describe())
 
 if __name__ == '__main__':
     main()
