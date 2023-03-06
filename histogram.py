@@ -17,8 +17,8 @@ def main():
 	
 	#https://mode.com/example-gallery/python_histogram/
 	# df.hist(column='Hogwarts House')
-	# hist = df.hist(column='Arithmancy')
-	# hist = df.hist()
+	hist = df.hist(column='Arithmancy')
+	plt.show()
 
 
 if __name__ == '__main__':
