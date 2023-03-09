@@ -11,14 +11,19 @@ def rename_columns(df):
 	new_column_names = []
 	i = 1
 	for column in df:
-		new_column_names.append("Feature " + str(i))
-		i += 1
+		if column == "Index":
+			new_column_names.append("Index")
+		# if column == "Hogwarts House":
+		# 	new_column_names.append("Hogwarts House")
+		else:
+			new_column_names.append("Feature " + str(i))
+			i += 1
 	df.columns = new_column_names
 
 
 def arrange_columns(df):
 	# drop index column
-	df.drop(columns=['Index'], inplace=True)
+	# 
 
 	# drop non-numeric columns
 	for column in df:
@@ -59,7 +64,7 @@ def calculate_percentiles(df, column, count):
 	return (first_percentile, second_percentile, third_percentile)
 
 
-def calculate_standard_derivation(df, column, mean, count):
+def calculate_standard_deviation(df, column, mean, count):
 	std = 0
 	for value in df[column]:
 		if math.isnan(value) == True:
@@ -77,6 +82,7 @@ def main():
 		exit()
 	try:
 		df = pd.read_csv(sys.argv[1])
+		original_df = pd.read_csv(sys.argv[1])
 	except:
 		print(f"{colors().RED}Error: could not read file{colors().END}")
 		print(sys.argv[1])
@@ -123,7 +129,7 @@ def main():
 		
 		mean = mean / count
 
-		std = calculate_standard_derivation(df, column, mean, count)
+		std = calculate_standard_deviation(df, column, mean, count)
 		first_percentile, second_percentile, third_percentile = calculate_percentiles(df, column, count)
 
 		count_array.append(count)
@@ -150,7 +156,7 @@ def main():
 	print(f"\n{colors().BLUE}", print_df, f"{colors().END}")
 
 	# DESIRED END RESULT PART 1
-	print("\nDESIRED RESULT: \n\n", df.describe(), "\n")
+	print("\nDESIRED RESULT: \n\n", original_df.describe(), "\n")
 
 if __name__ == '__main__':
     main()
