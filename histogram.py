@@ -5,7 +5,8 @@ import time
 from colors import colors
 import sys
 import math
-from describe import calculate_standard_deviation, rename_columns
+from describe import calculate_standard_deviation
+
 
 def arrange_columns_for_houses(df):
 	# drop index column
@@ -21,6 +22,17 @@ def arrange_columns_for_houses(df):
 			df.drop(columns=[column], inplace=True)
 	
 
+def rename_columns(df):
+	new_column_names = []
+	i = 1
+	for column in df:
+		if column == "Hogwarts House":
+			new_column_names.append("Hogwarts House")
+		else:
+			new_column_names.append("Feature " + str(i))
+			i += 1
+	df.columns = new_column_names
+
 
 def main():
 	try:
@@ -32,11 +44,15 @@ def main():
 	### MATHS PART COPIED FROM describe.py
 	arrange_columns_for_houses(df)
 	rename_columns(df)
+
+	# print(df)
 	
 	count = 0
 	mean = 0.0
 	global_std_array = []
-	local_std_array = []
+	
+	# local_std_array = np.array([[], [], [], []])
+	local_std_array = [[], [], [], []]
 	std = 0
 
 	for column in df:
@@ -57,14 +73,23 @@ def main():
 		ravenclaw_std = 0.0
 		slytherin_std = 0.0
 
-		flag = ""
-
+		index_helper = 0
 		for value in df[column]:
-			if column == "Hogwarts House":
-				flag = value
-				print(flag)
-				continue
+			local_std_array = [[], [], [], []]
+			if value == "Gryffindor" or value == "Hufflepuff" or value == "Ravenclaw" or value == "Slytherin":
+				break
+			if df["Hogwarts House"][index_helper] == "Gryffindor":
+				flag = "Gryffindor"
+			if df["Hogwarts House"][index_helper] == "Hufflepuff":
+				flag = "Hufflepuff"
+			if df["Hogwarts House"][index_helper] == "Ravenclaw":
+				flag = "Ravenclaw"
+			if df["Hogwarts House"][index_helper] == "Slytherin":
+				flag = "Slytherin"
+			index_helper += 1
 
+			#flags work!!
+		
 			if math.isnan(value) == False:
 				if flag == "Gryffindor":
 					gryffindor_count += 1
@@ -78,36 +103,54 @@ def main():
 			else:
 				value = 0
 			if flag == "Gryffindor":
-				gryffindor_mean += 1
+				gryffindor_mean += value
 			if flag == "Hufflepuff":
-				hufflepuff_mean += 1
+				hufflepuff_mean += value
 			if flag == "Ravenclaw":
-				ravenclaw_mean += 1
+				ravenclaw_mean += value
 			if flag == "Slytherin":
-				slytherin_mean += 1	
+				slytherin_mean += value
 			mean = mean + value
 			gryffindor_mean = gryffindor_mean + value
 			hufflepuff_mean = hufflepuff_mean + value
 			ravenclaw_mean = ravenclaw_mean + value
 			slytherin_mean = slytherin_mean + value
 		
-		mean = mean / count
-		gryffindor_mean = gryffindor_mean / gryffindor_count
-		hufflepuff_mean = hufflepuff_mean / hufflepuff_count
-		ravenclaw_mean = ravenclaw_mean / ravenclaw_count
-		slytherin_mean = slytherin_mean / slytherin_count
+		if column != "Hogwarts House":
+			mean = mean / count
+			# if flag == "Gryffindor":
+			gryffindor_mean = gryffindor_mean / gryffindor_count
+			# if flag == "Hufflepuff":
+			hufflepuff_mean = hufflepuff_mean / hufflepuff_count
+			# if flag == "Ravenclaw":
+			ravenclaw_mean = ravenclaw_mean / ravenclaw_count
+			# if flag == "Slytherin":
+			slytherin_mean = slytherin_mean / slytherin_count			
+			
+			std = calculate_standard_deviation(df, column, mean, count)
+			# if flag == "Gryffindor":
+			gryffindor_std = calculate_standard_deviation(df, column, gryffindor_mean, gryffindor_count)
+			# if flag == "Hufflepuff":
+			hufflepuff_std = calculate_standard_deviation(df, column, hufflepuff_mean, hufflepuff_count)
+			# if flag == "Ravenclaw":
+			ravenclaw_std = calculate_standard_deviation(df, column, ravenclaw_mean, ravenclaw_count)
+			# if flag == "Slytherin":
+			slytherin_std = calculate_standard_deviation(df, column, slytherin_mean, slytherin_count)
+			
+			print("gr_std: ", gryffindor_std, " huf_std: ", hufflepuff_std, " rav_std: ", ravenclaw_std)
 
-		std = calculate_standard_deviation(df, column, mean, count)
-		gryffindor_std = calculate_standard_deviation(df, column, gryffindor_mean, gryffindor_count)
-		hufflepuff_std = calculate_standard_deviation(df, column, hufflepuff_mean, hufflepuff_count)
-		ravenclaw_std = calculate_standard_deviation(df, column, ravenclaw_mean, ravenclaw_count)
-		slytherin_std = calculate_standard_deviation(df, column, slytherin_mean, slytherin_count)
-		
-		local_std_array.append(gryffindor_std)
-		local_std_array.append(hufflepuff_std)
-		local_std_array.append(ravenclaw_std)
-		local_std_array.append(slytherin_std)
-		global_std_array.append(local_std_array)
+			# if flag == "Gryffindor":
+			local_std_array[0].append(gryffindor_std)
+			# if flag == "Hufflepuff":
+			local_std_array[1].append(hufflepuff_std)
+			# if flag == "Ravenclaw":
+			local_std_array[2].append(ravenclaw_std)
+			# if flag == "Slytherin":
+			local_std_array[3].append(slytherin_std)
+			# print("lsa: ", local_std_array[1], " house: ", flag)
+			global_std_array.append(local_std_array)
+			# print(local_std_array)
+			# print(global_std_array)
 	### END MATHS PART
 	
 	#https://mode.com/example-gallery/python_histogram/
@@ -116,7 +159,10 @@ def main():
 	# balkendiagramm für jedes zählbare feature, dann alle balkendiagramme übereinander legen
 	# either unterschiedliche häuser -> unterschiedliche farben
 	# oder eine metrik für die homogenität und die alle nebeneinanber
-	print(global_std_array)
+	# print(local_std_array)
+	for array in global_std_array:
+		print(array)
+		print("\n")
 	# hist = df.hist(column='Arithmancy')
 	# plt.show()
 
