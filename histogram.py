@@ -118,39 +118,24 @@ def main():
 		
 		if column != "Hogwarts House":
 			mean = mean / count
-			# if flag == "Gryffindor":
 			gryffindor_mean = gryffindor_mean / gryffindor_count
-			# if flag == "Hufflepuff":
 			hufflepuff_mean = hufflepuff_mean / hufflepuff_count
-			# if flag == "Ravenclaw":
 			ravenclaw_mean = ravenclaw_mean / ravenclaw_count
-			# if flag == "Slytherin":
 			slytherin_mean = slytherin_mean / slytherin_count			
 			
 			std = calculate_standard_deviation(df, column, mean, count)
-			# if flag == "Gryffindor":
 			gryffindor_std = calculate_standard_deviation(df, column, gryffindor_mean, gryffindor_count)
-			# if flag == "Hufflepuff":
 			hufflepuff_std = calculate_standard_deviation(df, column, hufflepuff_mean, hufflepuff_count)
-			# if flag == "Ravenclaw":
 			ravenclaw_std = calculate_standard_deviation(df, column, ravenclaw_mean, ravenclaw_count)
-			# if flag == "Slytherin":
 			slytherin_std = calculate_standard_deviation(df, column, slytherin_mean, slytherin_count)
 			
 			print("gr_std: ", gryffindor_std, " huf_std: ", hufflepuff_std, " rav_std: ", ravenclaw_std)
 
-			# if flag == "Gryffindor":
 			local_std_array[0].append(gryffindor_std)
-			# if flag == "Hufflepuff":
 			local_std_array[1].append(hufflepuff_std)
-			# if flag == "Ravenclaw":
 			local_std_array[2].append(ravenclaw_std)
-			# if flag == "Slytherin":
 			local_std_array[3].append(slytherin_std)
-			# print("lsa: ", local_std_array[1], " house: ", flag)
 			global_std_array.append(local_std_array)
-			# print(local_std_array)
-			# print(global_std_array)
 	### END MATHS PART
 	
 	#https://mode.com/example-gallery/python_histogram/
