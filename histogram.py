@@ -45,7 +45,19 @@ def main():
 	arrange_columns_for_houses(df)
 	rename_columns(df)
 
-	# print(df)
+	########### normalize data start ###########
+	for column in df:
+		if df[column].dtype.kind not in 'biufc': # https://stackoverflow.com/a/38185438
+			continue
+		max_norm = df[column].max()
+		min_norm = df[column].min()
+
+		# df[column] /= max_norm
+		for i in range(len(df)):
+			df.iloc[i, df.columns.get_loc(column)] = (df.iloc[i, df.columns.get_loc(column)] - min_norm) / (max_norm - min_norm) 
+	########### normalize data end ###########
+
+	print(df)
 	
 	count = 0
 	mean = 0.0
