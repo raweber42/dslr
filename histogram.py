@@ -6,6 +6,10 @@ from colors import colors
 import sys
 import math
 from describe import calculate_standard_deviation
+#Gradient Color Bar Plots
+from matplotlib import cm
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+from matplotlib import colors as mcolors, path
 
 
 def arrange_columns_for_houses(df):
@@ -43,7 +47,7 @@ def main():
 	
 	### MATHS PART COPIED FROM describe.py
 	arrange_columns_for_houses(df)
-	rename_columns(df)
+	# rename_columns(df)
 
 	########### normalize data start ###########
 	for column in df:
@@ -57,14 +61,11 @@ def main():
 			df.iloc[i, df.columns.get_loc(column)] = (df.iloc[i, df.columns.get_loc(column)] - min_norm) / (max_norm - min_norm) 
 	########### normalize data end ###########
 
-	print(df)
+	# print(df)
 	
 	count = 0
 	mean = 0.0
 	global_std_array = []
-	
-	# local_std_array = np.array([[], [], [], []])
-	local_std_array = [[], [], [], []]
 	std = 0
 
 	for column in df:
@@ -87,7 +88,7 @@ def main():
 
 		index_helper = 0
 		for value in df[column]:
-			local_std_array = [[], [], [], []]
+			local_std_array = []
 			if value == "Gryffindor" or value == "Hufflepuff" or value == "Ravenclaw" or value == "Slytherin":
 				break
 			if df["Hogwarts House"][index_helper] == "Gryffindor":
@@ -141,12 +142,13 @@ def main():
 			ravenclaw_std = calculate_standard_deviation(df, column, ravenclaw_mean, ravenclaw_count)
 			slytherin_std = calculate_standard_deviation(df, column, slytherin_mean, slytherin_count)
 			
-			print("gr_std: ", gryffindor_std, " huf_std: ", hufflepuff_std, " rav_std: ", ravenclaw_std)
+			# print("gr_std: ", gryffindor_std, " huf_std: ", hufflepuff_std, " rav_std: ", ravenclaw_std)
 
-			local_std_array[0].append(gryffindor_std)
-			local_std_array[1].append(hufflepuff_std)
-			local_std_array[2].append(ravenclaw_std)
-			local_std_array[3].append(slytherin_std)
+			local_std_array.append(gryffindor_std)
+			local_std_array.append(hufflepuff_std)
+			local_std_array.append(ravenclaw_std)
+			local_std_array.append(slytherin_std)
+			# print(local_std_array)
 			global_std_array.append(local_std_array)
 	### END MATHS PART
 	
@@ -157,10 +159,80 @@ def main():
 	# either unterschiedliche häuser -> unterschiedliche farben
 	# oder eine metrik für die homogenität und die alle nebeneinanber
 	# print(local_std_array)
+	# print(global_std_array)
+	hist_array = []
 	for array in global_std_array:
-		print(array)
-		print("\n")
-	# hist = df.hist(column='Arithmancy')
+		hist_count = 0
+		hist_mean = 0
+		for value in array:
+			# print(value)
+			if math.isnan(value) == False:
+				hist_count += 1
+			else:
+				value = 0			
+			hist_mean += value
+		hist_mean = hist_mean / hist_count
+
+		hist_std = 0
+		for value in array:
+			if math.isnan(value) == True:
+				continue
+			hist_std += (value - hist_mean) ** 2
+		
+		# std /= (count - 1)
+		hist_std /= (len(array) - 1)
+		hist_std = math.sqrt(hist_std)
+		hist_array.append(hist_std)
+
+	print(hist_array[:-2])
+
+		
+	def gradientbars(bars,ydata,cmap):
+		ax = bars[0].axes
+		lim = ax.get_xlim()+ax.get_ylim()
+		ax.axis(lim)
+		for bar in bars:
+			bar.set_facecolor("none")
+			x,y = bar.get_xy()
+			w, h = bar.get_width(), bar.get_height()
+			grad = np.atleast_2d(np.linspace(0,1*h/max(ydata),256)).T
+			#zorder of 2 to get gradients above the facecolor, but below the bar outlines
+			ax.imshow(grad, extent=[x,x+w,y,y+h], origin='lower',aspect="auto",zorder=2, norm=cm.colors.NoNorm(vmin=0,vmax=1),cmap=plt.get_cmap(cmap))
+
+	# fig, ax = plt.subplots()
+	# # zorder=0 sends gridlines to the back
+	# ax.grid(which='major', axis='y', linestyle='--', color='gray', zorder=0)
+	# # zorder=3 makes our edges show
+	# my_bar = ax.bar(df.a,df.b, edgecolor='gray', zorder=3)
+	# gradientbars(my_bar, df.b, 'YlOrRd')
+	# plt.show()
+	
+	# print(pd_df)
+	# hist = pd_df.hist()
+	fig, ax = plt.subplots()
+	# show horizontal grid lines
+	ax.grid(which='major', axis='y', linestyle='--', color='gray', zorder=0)
+	# zorder=3 makes our edges show
+	courses = ['Arithmancy' ,'Astronomy', 'Herbology', 'Defense Against the Dark Arts', 'Divination', 'Muggle Studies', 'Ancient Runes', 'History of Magic', 'Transfiguration', 'Potions', 'Care of Magical Creatures', 'Charms', 'Flying']
+	my_bar = ax.bar(courses ,hist_array, edgecolor='gray', zorder=3)
+	gradientbars(my_bar, hist_array, 'YlOrRd')
+
+	plt.xticks(rotation=90)
+	plt.title("Homogenity of scores per Hogwarts course", fontsize=16, fontweight=0)
+	plt.xlabel("hogwarts course",  fontsize=14)
+	plt.ylabel("standard deviation",  fontsize=14)
+	ax.xaxis.label.set_color('grey')
+	ax.yaxis.label.set_color('grey')
+	plt.tight_layout()
+
+	plt.show()
+
+
+	# df["Arithmancy"].hist()
+	
+	# plt.tight_layout()
+	# plt.xlabel = "TESTTTT"
+	# # plt.hist(hist_array[:-10])
 	# plt.show()
 
 
