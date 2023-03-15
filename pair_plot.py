@@ -18,41 +18,52 @@ def arrange_columns(df):
 
 def main():
 
-    try:
-        df = pd.read_csv("datasets/dataset_train.csv")
-    except:
-        print(f"{colors().RED}Error: could not read file{colors().END}")
-        exit()
+	try:
+		df = pd.read_csv("datasets/dataset_train.csv")
+	except:
+		print(f"{colors().RED}Error: could not read file{colors().END}")
+		exit()
 
-    arrange_columns(df)
-    print(df)
+	arrange_columns(df)
+	print(df)
 
-    fig, ax = plt.subplots(4,4)
-    i = 0
-    j = 0
-    for column in df:
-       
+
+	########### normalize data start ###########
+	for column in df:
+		if df[column].dtype.kind not in 'biufc': # https://stackoverflow.com/a/38185438
+			continue
+		max_norm = df[column].max()
+		min_norm = df[column].min()
+
+		# df[column] /= max_norm
+		for i in range(len(df)):
+			df.iloc[i, df.columns.get_loc(column)] = (df.iloc[i, df.columns.get_loc(column)] - min_norm) / (max_norm - min_norm) 
+	########### normalize data end ###########
+
+
+	fig, ax = plt.subplots(4,4)
+	i = 0
+	j = 0
+	counter = 0
+	for column in df:
+		if j == 4:
+			i += 1
+			j = 0
 		# sort column ascending for percentiles
-        df.sort_values(by=[column], inplace=True)
+		df.sort_values(by=[column], inplace=True)
 
-        # change color below! and make it subplots
-        ax[i][j].scatter(list(range(0, len(df[column]))), df[column], s=1, color="black")
-        # marker="s", markersize=10, markerfacecolor="lightblue"
-        if j == 3:
-           i += 1
-           j = 0
-        j += 1
-        
-        # plt.scatter(list(range(0, len(df.Arithmancy))), df.Arithmancy, color="black")
+		# change color below! and make it subplots
+		
+		ax[i][j].scatter(df.index, df[column], s=1, color="black")
+		ax[i][j].set_title(df.columns[counter])
 
-    # plt.plot(
-    #     list(range(0, len(column))), 
-    #     column, 
-        # color="green")
-    # uncomment below for prediction marker
-    # plt.plot(input_mileage, prediction, marker="s", markersize=10, markerfacecolor="lightblue")
-    plt.show()
+		j += 1
+		counter += 1
+		
+
+	plt.tight_layout()
+	plt.show()
 
 
 if __name__ == '__main__':
-    main()
+	main()
