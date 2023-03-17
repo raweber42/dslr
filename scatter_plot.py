@@ -25,7 +25,6 @@ def main():
 		exit()
 
 	arrange_columns(df)
-	print(df)
 
 
 	########### normalize data start ###########
@@ -64,15 +63,20 @@ def main():
 	plt.tight_layout()
 	# show scatter plot with the highest correlation
 	fig_cor, ax_cor = plt.subplots()
-	ax_cor.set_title("highest correlation (X vs Y)")
 	# someVariable = df["Arithmancy"].corrwith(df["Flying"])
-
+	max_corr = 0
 	for column in df:
 		someVariable = df.corrwith(df[column], axis=0)
-		for value in someVariable:
-			if value > 0.5:
-				print(f"high value of {value} in column {column} comparing to XXX")
-
+		for (index, value) in enumerate(someVariable):
+			if value > max_corr and column != someVariable.index[index]:
+				max_corr = value
+				max_corr_col_1 = column
+				max_corr_col_2 = someVariable.index[index]
+				print(f"Current max_corr of {max_corr} in column {column} comparing to {someVariable.index[index]}")
+	ax_cor.set_title(f"Highest correlation: {max_corr_col_1} and {max_corr_col_2}")
+	ax_cor.scatter(df.index, df[max_corr_col_1], s=8, color="yellow", marker="s", label=max_corr_col_1)
+	ax_cor.scatter(df.index, df[max_corr_col_2], s=8, color="black", marker="^", label=max_corr_col_2)
+	ax_cor.legend(loc="best")
 	plt.tight_layout()
 	plt.show()
 
