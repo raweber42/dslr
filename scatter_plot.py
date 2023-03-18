@@ -78,6 +78,7 @@ def main():
 	ax_cor.scatter(df.index, df[max_corr_col_2], s=8, color="black", marker="^", label=max_corr_col_2)
 	ax_cor.legend(loc="best")
 	plt.tight_layout()
+	plt.savefig('scatter_plot.png')
 	plt.show()
 
 

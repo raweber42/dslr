@@ -224,7 +224,7 @@ def main():
 	ax.xaxis.label.set_color('grey')
 	ax.yaxis.label.set_color('grey')
 	plt.tight_layout()
-
+	plt.savefig('histogram.png')
 	plt.show()
 
 
