@@ -184,8 +184,6 @@ def main():
 		hist_std = math.sqrt(hist_std)
 		hist_array.append(hist_std)
 
-	print(hist_array[:-2])
-
 		
 	def gradientbars(bars,ydata,cmap):
 		ax = bars[0].axes
@@ -226,14 +224,6 @@ def main():
 	plt.tight_layout()
 	plt.savefig('histogram.png')
 	plt.show()
-
-
-	# df["Arithmancy"].hist()
-	
-	# plt.tight_layout()
-	# plt.xlabel = "TESTTTT"
-	# # plt.hist(hist_array[:-10])
-	# plt.show()
 
 
 if __name__ == '__main__':

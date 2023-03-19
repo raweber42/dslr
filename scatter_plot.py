@@ -61,6 +61,7 @@ def main():
 		counter += 1
 	
 	plt.tight_layout()
+	plt.savefig('scatter_overview.png')
 	# show scatter plot with the highest correlation
 	fig_cor, ax_cor = plt.subplots()
 	# someVariable = df["Arithmancy"].corrwith(df["Flying"])
