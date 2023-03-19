@@ -6,6 +6,7 @@ from colors import colors
 import seaborn as sns
 
 
+# drops all non-numeric columns besides "Hogwarts House"
 def arrange_columns(df):
 	# drop index column
 	df.drop(columns=['Index'], inplace=True)
@@ -19,6 +20,27 @@ def arrange_columns(df):
 			df.drop(columns=[column], inplace=True)
 
 
+# adds newlines to long label names
+def adjust_plot_labels(df):
+	new_column_names = []
+	for column in df:
+		if column == 'Hogwarts House':
+			new_column_names.append(column)
+		elif len(column) > 15:
+			split_col = column.split(" ")
+			tmp_col_name = ""
+			for i in range(len(split_col)):
+				tmp_col_name += split_col[i]
+				if i % 2:
+					tmp_col_name += "\n"
+				else:
+					tmp_col_name += " "
+			new_column_names.append(tmp_col_name)
+		else:
+			new_column_names.append(column)
+	df.columns = new_column_names
+
+
 def main():
 
 	try:
@@ -28,8 +50,7 @@ def main():
 		exit()
 
 	arrange_columns(df)
-	# get sub-df's by houses
-	# ravenclaw = df[df["Hogwarts House"] == "Ravenclaw"]
+	adjust_plot_labels(df)
 
 	########### normalize data start (min-max) ###########
 	for column in df:
@@ -43,8 +64,6 @@ def main():
 	########### normalize data end ###########
 
 	
-	sns.set_style('darkgrid')
-	
 	#REMOVE
 	# i = 0
 	# for column in df:
@@ -53,17 +72,16 @@ def main():
 	# 		df.drop(columns=[column], inplace=True)
 	#REMOVE
 
+	# scale down the font size
+	sns.set_style('darkgrid')
+	sns.set(font_scale=0.5)
+	# plot the pairplot and give a hue according to the "Hogwarts House" feature
 	pairplot = sns.pairplot(df, hue="Hogwarts House", height=0.8, palette="bright", kind="scatter", plot_kws={"s": 3})
-	# pairplot.set_yticklabels(df.columns, rotation=90)
-	# pairplot.tick_params(axis='both', rotation=90)
-	# pairplot.set(xlabel)
-	# for ax in pairplot.axes.flatten():
-   		# ax.tick_params(rotation = 90)
-	# ax.set_xticklabels(["one", "two", "three", "four", "five"], rotation=45)
 
-	# plt.legend(bbox_to_anchor=(1.02, 0.15), loc='upper left', borderaxespad=0)
-	# plt.yticks(rotation=90)
-	# sns.xticks(rotation=90)
+	# remove labels in sub-plots
+	for ax in pairplot.axes.flatten():
+   		ax.set_xticklabels([])
+   		ax.set_yticklabels([])
 
 	# plt.tight_layout()
 	plt.savefig('pair_plot.png')
