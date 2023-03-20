@@ -65,18 +65,31 @@ def main():
 	# show scatter plot with the highest correlation
 	fig_cor, ax_cor = plt.subplots()
 	# someVariable = df["Arithmancy"].corrwith(df["Flying"])
-	max_corr = 0
+	max_pos_corr = 0
+	max_neg_corr = 1
 	for column in df:
 		someVariable = df.corrwith(df[column], axis=0)
 		for (index, value) in enumerate(someVariable):
-			if value > max_corr and column != someVariable.index[index]:
-				max_corr = value
-				max_corr_col_1 = column
-				max_corr_col_2 = someVariable.index[index]
-				print(f"Current max_corr of {max_corr} in column {column} comparing to {someVariable.index[index]}")
-	ax_cor.set_title(f"Highest correlation: {max_corr_col_1} and {max_corr_col_2}")
-	ax_cor.scatter(df.index, df[max_corr_col_1], s=8, color="yellow", marker="s", label=max_corr_col_1)
-	ax_cor.scatter(df.index, df[max_corr_col_2], s=8, color="black", marker="^", label=max_corr_col_2)
+			if value > max_pos_corr and column != someVariable.index[index]:
+				max_pos_corr = value
+				max_pos_corr_col_1 = column
+				max_pos_corr_col_2 = someVariable.index[index]
+				print(f"Current max_pos_corr of {max_pos_corr} in column {column} comparing to {someVariable.index[index]}")
+			if value < max_neg_corr and column != someVariable.index[index]:
+				max_neg_corr = value
+				max_neg_corr_col_1 = column
+				max_neg_corr_col_2 = someVariable.index[index]
+				print(f"Current max_neg_corr of {max_neg_corr} in column {column} comparing to {someVariable.index[index]}")
+			
+	if abs(max_pos_corr) > abs(max_neg_corr):
+		ax_cor.set_title(f"Highest correlation: {max_pos_corr_col_1} and {max_pos_corr_col_2}")
+		ax_cor.scatter(df.index, df[max_pos_corr_col_1], s=8, color="yellow", marker="s", label=max_pos_corr_col_1)
+		ax_cor.scatter(df.index, df[max_pos_corr_col_2], s=8, color="black", marker="^", label=max_pos_corr_col_2)
+	else:
+		ax_cor.set_title(f"Highest correlation: {max_neg_corr_col_1} and {max_neg_corr_col_2}")
+		ax_cor.scatter(df.index, df[max_neg_corr_col_1], s=8, color="yellow", marker="s", label=max_neg_corr_col_1)
+		ax_cor.scatter(df.index, df[max_neg_corr_col_2], s=8, color="black", marker="^", label=max_neg_corr_col_2)
+	
 	ax_cor.legend(loc="best")
 	plt.tight_layout()
 	plt.savefig('scatter_plot.png')
