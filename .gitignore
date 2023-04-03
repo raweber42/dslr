@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Costum for DSLR:
+theta.txt
+houses.csv
