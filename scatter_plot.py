@@ -10,7 +10,6 @@ def arrange_columns(df):
 	df.drop(columns=['Index'], inplace=True)
 	for column in df:
 		if df[column].dtype.kind in 'biufc': # https://stackoverflow.com/a/38185438
-			#print(df[column])
 			continue
 		else:
 			df.drop(columns=[column], inplace=True)
@@ -29,12 +28,11 @@ def main():
 
 	########### normalize data start ###########
 	for column in df:
-		if df[column].dtype.kind not in 'biufc': # https://stackoverflow.com/a/38185438
+		if df[column].dtype.kind not in 'biufc':
 			continue
 		max_norm = df[column].max()
 		min_norm = df[column].min()
 
-		# df[column] /= max_norm
 		for i in range(len(df)):
 			df.iloc[i, df.columns.get_loc(column)] = (df.iloc[i, df.columns.get_loc(column)] - min_norm) / (max_norm - min_norm) 
 	########### normalize data end ###########
@@ -51,9 +49,7 @@ def main():
 			j = 0
 		# sort column ascending for percentiles
 		df.sort_values(by=[column], inplace=True)
-
-		# change color below! and make it subplots
-		
+	
 		ax[i][j].scatter(df.index, df[column], s=1, color="black")
 		ax[i][j].set_title(df.columns[counter])
 
@@ -64,7 +60,6 @@ def main():
 	plt.savefig('scatter_overview.png')
 	# show scatter plot with the highest correlation
 	fig_cor, ax_cor = plt.subplots()
-	# someVariable = df["Arithmancy"].corrwith(df["Flying"])
 	max_pos_corr = 0
 	max_neg_corr = 1
 	for column in df:

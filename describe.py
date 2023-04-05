@@ -13,8 +13,6 @@ def rename_columns(df):
 	for column in df:
 		if column == "Index":
 			new_column_names.append("Index")
-		# if column == "Hogwarts House":
-		# 	new_column_names.append("Hogwarts House")
 		else:
 			new_column_names.append("Feature " + str(i))
 			i += 1
@@ -22,13 +20,9 @@ def rename_columns(df):
 
 
 def arrange_columns(df):
-	# drop index column
-	# 
-
 	# drop non-numeric columns
 	for column in df:
 		if df[column].dtype.kind in 'biufc': # https://stackoverflow.com/a/38185438
-			#print(df[column])
 			continue
 		else:
 			df.drop(columns=[column], inplace=True)

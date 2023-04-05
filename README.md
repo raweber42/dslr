@@ -5,4 +5,4 @@ In this project DataScience x Logistic Regression, you will continue your explor
 
 Summarizing: 
 - You will learn how to read a data set, to visualize it in different ways, to select and clean unnecessary information from your data. 
-- You will train a logistic regression that will solve classification problem
+- You will train a logistic regression that will solve classification problem (The Hogwarts Sorting Hat)

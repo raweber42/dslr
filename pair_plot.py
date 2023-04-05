@@ -11,8 +11,7 @@ def arrange_columns(df):
 	# drop index column
 	df.drop(columns=['Index'], inplace=True)
 	for column in df:
-		if df[column].dtype.kind in 'biufc': # https://stackoverflow.com/a/38185438
-			#print(df[column])
+		if df[column].dtype.kind in 'biufc':
 			continue
 		if column == 'Hogwarts House':
 			continue
@@ -54,7 +53,7 @@ def main():
 
 	########### normalize data start (min-max) ###########
 	for column in df:
-		if df[column].dtype.kind not in 'biufc': # https://stackoverflow.com/a/38185438
+		if df[column].dtype.kind not in 'biufc':
 			continue
 		max_norm = df[column].max()
 		min_norm = df[column].min()
@@ -62,15 +61,6 @@ def main():
 		for i in range(len(df)):
 			df.iloc[i, df.columns.get_loc(column)] = (df.iloc[i, df.columns.get_loc(column)] - min_norm) / (max_norm - min_norm) 
 	########### normalize data end ###########
-
-	
-	#REMOVE
-	# i = 0
-	# for column in df:
-	# 	i += 1
-	# 	if i > 5:
-	# 		df.drop(columns=[column], inplace=True)
-	#REMOVE
 
 	# scale down the font size
 	sns.set_style('darkgrid')

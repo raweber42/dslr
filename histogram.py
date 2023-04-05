@@ -18,7 +18,7 @@ def arrange_columns_for_houses(df):
 
 	# drop non-numeric columns
 	for column in df:
-		if df[column].dtype.kind in 'biufc': # https://stackoverflow.com/a/38185438
+		if df[column].dtype.kind in 'biufc':
 			continue
 		elif column== "Hogwarts House":
 			continue
@@ -45,9 +45,7 @@ def main():
 		print(f"{colors().RED}Error: could not read file{colors().END}")
 		exit()
 	
-	### MATHS PART COPIED FROM describe.py
 	arrange_columns_for_houses(df)
-	# rename_columns(df)
 
 	########### normalize data start ###########
 	for column in df:
@@ -60,8 +58,6 @@ def main():
 		for i in range(len(df)):
 			df.iloc[i, df.columns.get_loc(column)] = (df.iloc[i, df.columns.get_loc(column)] - min_norm) / (max_norm - min_norm) 
 	########### normalize data end ###########
-
-	# print(df)
 	
 	count = 0
 	mean = 0.0
@@ -100,8 +96,6 @@ def main():
 			if df["Hogwarts House"][index_helper] == "Slytherin":
 				flag = "Slytherin"
 			index_helper += 1
-
-			#flags work!!
 		
 			if math.isnan(value) == False:
 				if flag == "Gryffindor":
@@ -152,20 +146,12 @@ def main():
 			global_std_array.append(local_std_array)
 	### END MATHS PART
 	
-	#https://mode.com/example-gallery/python_histogram/
-	# df.hist(column='Hogwarts House')
-	# normalize all values
-	# balkendiagramm für jedes zählbare feature, dann alle balkendiagramme übereinander legen
-	# either unterschiedliche häuser -> unterschiedliche farben
-	# oder eine metrik für die homogenität und die alle nebeneinanber
-	# print(local_std_array)
-	# print(global_std_array)
+
 	hist_array = []
 	for array in global_std_array:
 		hist_count = 0
 		hist_mean = 0
 		for value in array:
-			# print(value)
 			if math.isnan(value) == False:
 				hist_count += 1
 			else:
@@ -179,7 +165,6 @@ def main():
 				continue
 			hist_std += (value - hist_mean) ** 2
 		
-		# std /= (count - 1)
 		hist_std /= (len(array) - 1)
 		hist_std = math.sqrt(hist_std)
 		hist_array.append(hist_std)
@@ -194,19 +179,10 @@ def main():
 			x,y = bar.get_xy()
 			w, h = bar.get_width(), bar.get_height()
 			grad = np.atleast_2d(np.linspace(0,1*h/max(ydata),256)).T
-			#zorder of 2 to get gradients above the facecolor, but below the bar outlines
+			# zorder of 2 to get gradients above the facecolor, but below the bar outlines
 			ax.imshow(grad, extent=[x,x+w,y,y+h], origin='lower',aspect="auto",zorder=2, norm=cm.colors.NoNorm(vmin=0,vmax=1),cmap=plt.get_cmap(cmap))
 
-	# fig, ax = plt.subplots()
-	# # zorder=0 sends gridlines to the back
-	# ax.grid(which='major', axis='y', linestyle='--', color='gray', zorder=0)
-	# # zorder=3 makes our edges show
-	# my_bar = ax.bar(df.a,df.b, edgecolor='gray', zorder=3)
-	# gradientbars(my_bar, df.b, 'YlOrRd')
-	# plt.show()
-	
-	# print(pd_df)
-	# hist = pd_df.hist()
+
 	fig, ax = plt.subplots()
 	# show horizontal grid lines
 	ax.grid(which='major', axis='y', linestyle='--', color='gray', zorder=0)
@@ -231,4 +207,4 @@ if __name__ == '__main__':
 
 
 # wanna have measure for: homogenity for course BUT: per house
-# so we'll have 4 numbers per Feature, maybe we could combine them then
+# so we'll have 4 numbers per Feature, I will combine them
